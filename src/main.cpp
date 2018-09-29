@@ -1,5 +1,7 @@
 #include <Arduino.h>
+#include <assert.h>
 #include "ESP8266WiFi.h"
+#include "DummyController.h"
 
 const char *ssid = "Franxx";
 const char *password = "nopenope";
@@ -11,7 +13,6 @@ void connectWifi();
 void closeClient(WiFiClient &client);
 
 const int ALL_PINS[] = {D0, D1, D2, D3, D4, D5, D6, D7, D8};
-// const int ALL_PINS[] = {D3, D4, D5};
 
 static const int READ_PINS = 6;
 
@@ -42,6 +43,20 @@ void connectWifi() {
     for (int pin :ALL_PINS) {
         pinMode(pin, OUTPUT);
     }
+}
+
+void testController() {
+    DummyController controller;
+    assert(controller.getName().equals("abc"));
+    const char *newname = "new name";
+    controller.setName(newname);
+    assert(controller.getName().equals(newname));
+
+    byte *data = controller.getData();
+    data[20] = 123;
+    assert(data[20] == 123);
+    assert(data[0] == 0);
+
 }
 
 void loop() {
